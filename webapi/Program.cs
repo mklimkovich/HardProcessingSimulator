@@ -1,12 +1,10 @@
+using WebApi.BackgroundServices;
 using WebApi.Hubs;
+using WebApi.Interfaces;
+using WebApi.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
@@ -19,8 +17,9 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddSingleton<IDictionary<string, UserConnection>>(opts => new Dictionary<string, UserConnection>());
-
+//builder.Services.AddSingleton<IEncodingQueueReader, >();
+builder.Services.AddHostedService<EncodingService>();
+builder.Services.AddHostedService<OutputService>();
 
 var app = builder.Build();
 
@@ -43,7 +42,6 @@ app.UseCors();
 
 app.UseAuthorization();
 
-app.MapControllers();
-app.MapHub<ChatHub>("/chat");
+app.MapHub<TaskHub>("/tasks");
 
 app.Run();
