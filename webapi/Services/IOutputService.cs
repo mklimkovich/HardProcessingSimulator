@@ -1,6 +1,6 @@
-﻿namespace WebApi.Interfaces;
+﻿namespace WebApi.Services;
 
-public interface IOutputHub
+public interface IOutputService
 {
     Task SendOutputAsync(string taskId, char? character, bool isLast);
 }

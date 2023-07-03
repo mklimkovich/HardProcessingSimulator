@@ -1,16 +1,18 @@
-﻿using WebApi.Interfaces;
+﻿using WebApi.Queues;
+using WebApi.Services;
+using WebApi.Storage;
 
 namespace WebApi.BackgroundServices;
 
 public sealed class EncodingService : IHostedService
 {
-    private readonly IQueueReader _encodingQueue;
+    private readonly IEncodingQueueReader _encodingQueue;
     private readonly ITaskStorage _storage;
     private readonly IBase64Encoder _encoder;
     private readonly IOutputScheduler _outputScheduler;
 
     public EncodingService(
-        IQueueReader encodingQueue,
+        IEncodingQueueReader encodingQueue,
         ITaskStorage storage,
         IBase64Encoder encoder,
         IOutputScheduler outputScheduler)
@@ -35,7 +37,7 @@ public sealed class EncodingService : IHostedService
         return Task.CompletedTask;
     }
 
-    private async ValueTask EncodeTextHandler(object? sender, TaskEventArgs e)
+    private async Task EncodeTextHandler(object? sender, TaskEventArgs e)
     {
         string taskId = e.TaskId;
 

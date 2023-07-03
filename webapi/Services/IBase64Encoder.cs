@@ -1,4 +1,4 @@
-﻿namespace WebApi.Interfaces;
+﻿namespace WebApi.Services;
 
 public interface IBase64Encoder
 {

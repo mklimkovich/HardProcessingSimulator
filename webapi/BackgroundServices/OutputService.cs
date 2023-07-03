@@ -1,21 +1,23 @@
-﻿using WebApi.Interfaces;
+﻿using WebApi.Queues;
+using WebApi.Services;
+using WebApi.Storage;
 
 namespace WebApi.BackgroundServices;
 
 public sealed class OutputService : IHostedService
 {
-    private readonly IQueueReader _outputQueue;
+    private readonly IOutputQueueReader _outputQueue;
     private readonly ITaskStorage _storage;
-    private readonly IOutputHub _hub;
+    private readonly IOutputService _service;
 
     public OutputService(
-        IQueueReader outputQueue,
+        IOutputQueueReader outputQueue,
         ITaskStorage storage,
-        IOutputHub hub)
+        IOutputService service)
     {
         _outputQueue = outputQueue;
         _storage = storage;
-        _hub = hub;
+        _service = service;
     }
 
     public Task StartAsync(CancellationToken stoppingToken)
@@ -32,7 +34,7 @@ public sealed class OutputService : IHostedService
         return Task.CompletedTask;
     }
 
-    private async ValueTask SendOutputHandler(object? sender, TaskEventArgs e)
+    private async Task SendOutputHandler(object? sender, TaskEventArgs e)
     {
         string taskId = e.TaskId;
 
@@ -48,7 +50,7 @@ public sealed class OutputService : IHostedService
             {
                 bool isLast = next == total - 1;
 
-                await _hub.SendOutputAsync(taskId, character, isLast);
+                await _service.SendOutputAsync(taskId, character, isLast);
 
                 await _storage.SaveLastSentCharacterAsync(taskId, next);
             }

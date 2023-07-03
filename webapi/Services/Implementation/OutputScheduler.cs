@@ -1,23 +1,26 @@
-﻿using WebApi.Interfaces;
+﻿using WebApi.Queues;
+using WebApi.Storage;
 
-namespace WebApi.Services;
+namespace WebApi.Services.Implementation;
 
 public class OutputScheduler : IOutputScheduler
 {
     private const int MinTimeoutSeconds = 1;
     private const int MaxTimeoutSeconds = 5;
-    private readonly IQueueScheduler _outputQueue;
+
+    private readonly IOutputQueueScheduler _outputQueue;
     private readonly ITaskStorage _storage;
+
     private readonly Random _random;
 
-    public OutputScheduler(IQueueScheduler outputQueue, ITaskStorage storage)
+    public OutputScheduler(IOutputQueueScheduler outputQueue, ITaskStorage storage)
     {
         _outputQueue = outputQueue;
         _storage = storage;
         _random = new Random();
     }
 
-    public async ValueTask ScheduleAsync(string taskId)
+    public async Task ScheduleAsync(string taskId)
     {
         if (await _storage.TaskExistsAsync(taskId))
         {

@@ -1,6 +1,6 @@
-﻿namespace WebApi.Interfaces;
+﻿namespace WebApi.Queues;
 
-public interface IQueueReader
+public interface IEncodingQueueReader
 {
     public event ItemReceivedAsyncHandler<TaskEventArgs>? ItemReceived;
 }

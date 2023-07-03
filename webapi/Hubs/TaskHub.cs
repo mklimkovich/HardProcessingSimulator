@@ -1,18 +1,21 @@
-﻿using System.Threading.Tasks.Sources;
-using Microsoft.AspNetCore.SignalR;
-using WebApi.Interfaces;
+﻿using Microsoft.AspNetCore.SignalR;
+using WebApi.Queues;
+using WebApi.Storage;
 
 namespace WebApi.Hubs;
 
-public class TaskHub : Hub, IOutputHub
+public class TaskHub : Hub
 {
     private readonly ITaskStorage _storage;
-    private readonly IQueueWriter _encodingQueue;
+    private readonly IEncodingQueueWriter _encodingQueue;
 
     public TaskHub(
-        ITaskStorage storage, 
-        IQueueWriter encodingQueue) =>
-        (_storage, _encodingQueue) = (storage, encodingQueue);
+        ITaskStorage storage,
+        IEncodingQueueWriter encodingQueue)
+    {
+        _storage = storage;
+        _encodingQueue = encodingQueue;
+    }
 
     public async Task RequestEncoding(string text)
     {
@@ -32,16 +35,6 @@ public class TaskHub : Hub, IOutputHub
         }
 
         await _encodingQueue.EnqueueAsync(taskId);
-    }
-
-    public async Task SendOutputAsync(string taskId, char? character, bool isLast)
-    {
-        if (isLast)
-        {
-            await _storage.DeleteTaskAsync(Context.ConnectionId);
-        }
-
-        await Clients.Clients(connection1: taskId).SendAsync("OnNextCharacterReceived", character);
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)

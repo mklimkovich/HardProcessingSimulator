@@ -1,4 +1,4 @@
-﻿namespace WebApi.Interfaces;
+﻿namespace WebApi.Queues;
 
 public class TaskEventArgs : EventArgs
 {
