@@ -33,22 +33,18 @@ builder.Services.AddHangfire(configuration => configuration
 
 builder.Services.AddHangfireServer();
 
-var logger = builder.Build().Logger;
+builder.Services.AddSingleton<ITaskStorage>(new InMemoryStorage());
 
-builder.Services.AddSingleton<ITaskStorage, InMemoryStorage>();
-
-EncodingQueue encodingQueue = new(logger);
-builder.Services.AddSingleton<IEncodingQueueReader>(encodingQueue);
-builder.Services.AddSingleton<IEncodingQueueWriter>(encodingQueue);
+builder.Services.AddSingleton<IEncodingQueueReader>(sp => new EncodingQueue(sp.GetRequiredService<ILogger<EncodingQueue>>()));
+builder.Services.AddSingleton(sp => (IEncodingQueueWriter) sp.GetRequiredService<IEncodingQueueReader>());
 
 builder.Services.AddSingleton<IBase64Encoder, Base64Encoder>();
 builder.Services.AddHostedService<EncodingService>();
 
 builder.Services.AddSingleton<IOutputScheduler, OutputScheduler>();
 
-OutputQueue outputQueue = new(logger);
-builder.Services.AddSingleton<IOutputQueueReader>(outputQueue);
-builder.Services.AddSingleton<IOutputQueueScheduler>(outputQueue);
+builder.Services.AddSingleton<IOutputQueueReader>(sp => new OutputQueue(sp.GetRequiredService<ILogger<OutputQueue>>()));
+builder.Services.AddSingleton(sp => (IOutputQueueScheduler)sp.GetRequiredService<IOutputQueueReader>());
 
 builder.Services.AddHostedService<WebApi.BackgroundServices.OutputService>();
 
