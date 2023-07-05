@@ -17,11 +17,11 @@ public class TaskHub : Hub
         _encodingQueue = encodingQueue;
     }
 
-    public async Task RequestEncoding(string text)
+    public async Task StartEncoding(string text)
     {
         if (string.IsNullOrEmpty(text))
         {
-            await Clients.Caller.SendAsync("Error", "Text cannot be empty.");
+            await Clients.Caller.SendAsync("OnError", "Text cannot be empty.");
             return;
         }
 
@@ -30,11 +30,16 @@ public class TaskHub : Hub
         bool success = await _storage.TryCreateTaskAsync(new TaskInfo(taskId, text));
         if (!success)
         {
-            await Clients.Caller.SendAsync("Error", "Cannot run more than one task.");
+            await Clients.Caller.SendAsync("OnError", "Cannot run more than one task.");
             return;
         }
 
         await _encodingQueue.EnqueueAsync(taskId);
+    }
+
+    public Task StopEncoding()
+    {
+        return OnDisconnectedAsync(null);
     }
 
     public override async Task OnDisconnectedAsync(Exception? exception)

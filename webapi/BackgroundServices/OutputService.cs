@@ -8,16 +8,19 @@ public sealed class OutputService : IHostedService
 {
     private readonly IOutputQueueReader _outputQueue;
     private readonly ITaskStorage _storage;
-    private readonly IOutputService _service;
+    private readonly ITaskHubService _service;
+    private readonly IOutputScheduler _scheduler;
 
     public OutputService(
         IOutputQueueReader outputQueue,
         ITaskStorage storage,
-        IOutputService service)
+        ITaskHubService service,
+        IOutputScheduler scheduler)
     {
         _outputQueue = outputQueue;
         _storage = storage;
         _service = service;
+        _scheduler = scheduler;
     }
 
     public Task StartAsync(CancellationToken stoppingToken)
@@ -50,9 +53,14 @@ public sealed class OutputService : IHostedService
             {
                 bool isLast = next == total - 1;
 
-                await _service.SendOutputAsync(taskId, character, isLast);
+                await _service.SendOutputAsync(taskId, character, next, total, isLast);
 
                 await _storage.SaveLastSentCharacterAsync(taskId, next);
+
+                if (!isLast)
+                {
+                    await _scheduler.ScheduleAsync(taskId);
+                }
             }
         }
     }

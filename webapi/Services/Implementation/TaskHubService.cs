@@ -4,12 +4,12 @@ using WebApi.Storage;
 
 namespace WebApi.Services.Implementation;
 
-public class OutputService : IOutputService
+public class TaskHubService : ITaskHubService
 {
     private readonly IHubContext<TaskHub> _hubContext;
     private readonly ITaskStorage _storage;
 
-    public OutputService(
+    public TaskHubService(
         IHubContext<TaskHub> hubContext,
         ITaskStorage storage)
     {
@@ -17,13 +17,13 @@ public class OutputService : IOutputService
         _storage = storage;
     }
 
-    public async Task SendOutputAsync(string taskId, char? character, bool isLast)
+    public async Task SendOutputAsync(string taskId, char? character, int index, int total, bool isLast)
     {
         if (isLast)
         {
             await _storage.DeleteTaskAsync(taskId);
         }
 
-        await _hubContext.Clients.Client(connectionId: taskId).SendAsync("OnNextCharacterReceived", character);
+        await _hubContext.Clients.Client(connectionId: taskId).SendAsync("OnNextCharacterReceived", character, index, total, isLast);
     }
 }
