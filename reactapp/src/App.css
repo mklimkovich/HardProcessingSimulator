@@ -1,4 +1,10 @@
-h1 {
-    margin: auto;
+.container
+{
     padding-top: 40px;
+    align-content: end;
+}
+
+textarea.form-control
+{
+    resize: none;
 }
