@@ -1,34 +1,33 @@
-import { useState } from 'react';
-import { Container, Button, Stack, ProgressBar, Form } from 'react-bootstrap';
+import { useState, useRef } from 'react';
+import { Container, Button, Stack, ProgressBar } from 'react-bootstrap';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import Header from './Header.js'
 import InputForm from './InputForm.js'
 import OutputArea from './OutputArea.js'
 
 export function Main() {
-    const [connection, setConnection] = useState(undefined);
-    const [inProgress, setInProgress] = useState(false);
-    const [encodedString, setEncodedString] = useState([]);
-    const [progress, setProgress] = useState(0);
+    let connection = useRef(undefined);
+    let encodedString = useRef("");
 
-    const calculatePercent = (current, total) => current * 100 / total;
+    const [inProgress, setInProgress] = useState(false);    
+    const [percentage, setPercentage] = useState(0);
+
+    const calculatePercentage = (current, total) => current * 100 / total;
 
     const onNextCharacterReceived = async (character, index, total, isLast) => {
-        console.log(`"New character received:${character}, ${index}/${total}`)
-
-        setProgress(calculatePercent(index + 1, total));
+        encodedString.current = encodedString.current + character;
+        setPercentage(calculatePercentage(index + 1, total));
 
         if (isLast)
         {
-            console.log("All characters are received.")
-
             //Wait for animation to complete when progres is 100%
             setTimeout(() => setInProgress(false), 1000);
         }
     };
 
     const onError = (errorMessage) => {
-        let message ='Server error: ' + errorMessage;
+        let message = `"Error: ${errorMessage}`;
+
         alert(message);
         console.log(message);
 
@@ -36,14 +35,12 @@ export function Main() {
     };
 
     const onClose = (error) => {
-        setConnection();
+        connection.current = undefined;
     };
 
     const onInputTextValid = async (inputText) => {
         try {
-            console.log(connection);
-
-            if (connection === undefined)
+            if (connection.current === undefined)
             {
                 console.log("Creating a new WebSocket connection...")
 
@@ -56,17 +53,17 @@ export function Main() {
                 newConnection.on("OnError", onError);
                 newConnection.onclose(onClose);
 
-                setConnection(newConnection);
-
                 await newConnection.start();  
-                await newConnection.invoke("StartEncoding", inputText);
-                     
+
+                connection.current = newConnection;              
             } else {
-                console.log("Reusing an existing WebSocket connection...")
-                await connection.invoke("StartEncoding", inputText);            
+                console.log("Reusing an existing WebSocket connection...")     
             }        
            
-            setProgress(0);
+            await connection.current.invoke("StartEncoding", inputText);
+
+            encodedString.current = "";
+            setPercentage(0);
             setInProgress(true);
         } catch (e) {
             console.log(e);
@@ -74,11 +71,7 @@ export function Main() {
     }
 
     const onCancelClick = async () => {
-        if (connection !== undefined)
-        {
-            await connection.invoke("StopEncoding");
-        }
-
+        await connection.current?.invoke("StopEncoding");
         setInProgress(false);
     }
 
@@ -93,10 +86,10 @@ export function Main() {
                     <Stack direction="horizontal" gap={3}>
                         <Button disabled={inProgress} type="submit" form="inputForm">Convert</Button>   
                         <Button disabled={!inProgress} type="button" onClick={onCancelClick}>Cancel</Button>
-                        <ProgressBar animated now={progress} variant='info' className='ms-auto' hidden={!inProgress} />
+                        <ProgressBar animated now={percentage} variant='info' className='ms-auto' hidden={!inProgress} />
                     </Stack>
                 
-                    <OutputArea value={encodedString} enabled={inProgress}/>                
+                    <OutputArea value={encodedString.current}/>                
                 </Stack>
             </Container>       
         </>
