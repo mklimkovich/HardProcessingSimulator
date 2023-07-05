@@ -7,7 +7,6 @@ using WebApi.Services;
 using WebApi.Services.Implementation;
 using WebApi.Storage;
 using WebApi.Storage.Implementation;
-using OutputService = WebApi.Services.Implementation.OutputService;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
@@ -31,34 +30,32 @@ builder.Services.AddHangfire(configuration => configuration
     .UseRecommendedSerializerSettings()
     .UseStorage(new Hangfire.InMemory.InMemoryStorage()));
 
-builder.Services.AddHangfireServer();
+builder.Services.AddHangfireServer(o => o.SchedulePollingInterval = TimeSpan.FromSeconds(1));
 
 builder.Services.AddSingleton<ITaskStorage>(new InMemoryStorage());
 
-builder.Services.AddSingleton<IEncodingQueueReader>(sp => new EncodingQueue(sp.GetRequiredService<ILogger<EncodingQueue>>()));
-builder.Services.AddSingleton(sp => (IEncodingQueueWriter) sp.GetRequiredService<IEncodingQueueReader>());
+builder.Services.AddSingleton<IEncodingQueueReader>(
+    sp => new EncodingQueue(sp.GetRequiredService<ILogger<EncodingQueue>>()));
+builder.Services.AddSingleton<IEncodingQueueWriter>(
+    sp => (IEncodingQueueWriter) sp.GetRequiredService<IEncodingQueueReader>());
 
 builder.Services.AddSingleton<IBase64Encoder, Base64Encoder>();
 builder.Services.AddHostedService<EncodingService>();
 
 builder.Services.AddSingleton<IOutputScheduler, OutputScheduler>();
 
-builder.Services.AddSingleton<IOutputQueueReader>(sp => new OutputQueue(sp.GetRequiredService<ILogger<OutputQueue>>()));
-builder.Services.AddSingleton(sp => (IOutputQueueScheduler)sp.GetRequiredService<IOutputQueueReader>());
+builder.Services.AddSingleton(sp => new OutputQueue(sp.GetRequiredService<ILogger<OutputQueue>>()));
+builder.Services.AddSingleton<IOutputQueueReader>(sp => sp.GetRequiredService<OutputQueue>());
+builder.Services.AddSingleton<IOutputQueueScheduler>(sp => sp.GetRequiredService<OutputQueue>());
 
-builder.Services.AddHostedService<WebApi.BackgroundServices.OutputService>();
+builder.Services.AddHostedService<OutputService>();
 
-builder.Services.AddSingleton<IOutputService, OutputService>();
+builder.Services.AddSingleton<ITaskHubService, TaskHubService>();
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
-else
+if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.

@@ -20,7 +20,7 @@ public class OutputQueue : IOutputQueueScheduler, IOutputQueueReader
         return Task.CompletedTask;
     }
 
-    private async Task EnqueueAsync(string taskId)
+    public async Task EnqueueAsync(string taskId)
     {
         try
         {
@@ -28,7 +28,7 @@ public class OutputQueue : IOutputQueueScheduler, IOutputQueueReader
         }
         catch (Exception e)
         {
-            _logger.LogError(e, "Encoding queue processing error");
+           _logger.LogError(e, "Encoding queue processing error");
         }
     }
 
