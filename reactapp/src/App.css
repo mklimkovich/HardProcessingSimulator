@@ -8,3 +8,8 @@ textarea.form-control
 {
     resize: none;
 }
+
+.progress
+{
+    width: 100%;
+}

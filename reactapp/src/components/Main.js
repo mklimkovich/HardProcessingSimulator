@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Container, Button, Stack } from 'react-bootstrap';
+import { Container, Button, Stack, ProgressBar, Form } from 'react-bootstrap';
 import { HubConnectionBuilder, LogLevel } from '@microsoft/signalr';
 import Header from './Header.js'
 import InputForm from './InputForm.js'
@@ -7,17 +7,23 @@ import OutputArea from './OutputArea.js'
 
 export function Main() {
     const [connection, setConnection] = useState(undefined);
-    const [isEncodingInProgress, setIsEncodingInProgress] = useState(false);
+    const [inProgress, setInProgress] = useState(false);
     const [encodedString, setEncodedString] = useState([]);
+    const [progress, setProgress] = useState(0);
 
-    const onNextCharacterReceived = (character, index, total, isLast) => {
+    const calculatePercent = (current, total) => current * 100 / total;
+
+    const onNextCharacterReceived = async (character, index, total, isLast) => {
         console.log(`"New character received:${character}, ${index}/${total}`)
+
+        setProgress(calculatePercent(index + 1, total));
 
         if (isLast)
         {
             console.log("All characters are received.")
 
-            setIsEncodingInProgress(false);
+            //Wait for animation to complete when progres is 100%
+            setTimeout(() => setInProgress(false), 1000);
         }
     };
 
@@ -26,7 +32,7 @@ export function Main() {
         alert(message);
         console.log(message);
 
-        setIsEncodingInProgress(false);
+        setInProgress(false);
     };
 
     const onClose = (error) => {
@@ -60,7 +66,8 @@ export function Main() {
                 await connection.invoke("StartEncoding", inputText);            
             }        
            
-            setIsEncodingInProgress(true);
+            setProgress(0);
+            setInProgress(true);
         } catch (e) {
             console.log(e);
         }
@@ -72,7 +79,7 @@ export function Main() {
             await connection.invoke("StopEncoding");
         }
 
-        setIsEncodingInProgress(false);
+        setInProgress(false);
     }
 
     return (
@@ -81,14 +88,15 @@ export function Main() {
                 <Stack gap={4}>                      
                     <Header/>
                                                                       
-                    <InputForm formId="inputForm" onValidationSucceed={onInputTextValid} disabled={isEncodingInProgress}/>
+                    <InputForm formId="inputForm" onValidationSucceed={onInputTextValid} disabled={inProgress}/>
                 
                     <Stack direction="horizontal" gap={3}>
-                        <Button disabled={isEncodingInProgress} type="submit" form="inputForm">Convert</Button>   
-                        <Button disabled={!isEncodingInProgress} type="button" onClick={onCancelClick}>Cancel</Button>   
-                    </Stack>            
+                        <Button disabled={inProgress} type="submit" form="inputForm">Convert</Button>   
+                        <Button disabled={!inProgress} type="button" onClick={onCancelClick}>Cancel</Button>
+                        <ProgressBar animated now={progress} variant='info' className='ms-auto' hidden={!inProgress} />
+                    </Stack>
                 
-                    <OutputArea value={encodedString} enabled={isEncodingInProgress}/>                
+                    <OutputArea value={encodedString} enabled={inProgress}/>                
                 </Stack>
             </Container>       
         </>
