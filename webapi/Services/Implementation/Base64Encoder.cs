@@ -9,7 +9,7 @@ public class Base64Encoder : IBase64Encoder
     {
         ArrayBufferWriter<byte> buffer = new();
 
-        Encoding.UTF32.GetBytes(rawData.AsSpan(), buffer);
+        Encoding.UTF8.GetBytes(rawData.AsSpan(), buffer);
 
         string result = Convert.ToBase64String(buffer.WrittenSpan);
 
