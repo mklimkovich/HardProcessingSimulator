@@ -35,6 +35,7 @@ export function Main({ serverUrl }) {
     };
 
     const onClose = (error) => {
+        console.error(error);
         connection.current = undefined;
     };
 
@@ -46,7 +47,8 @@ export function Main({ serverUrl }) {
 
                 const newConnection = new HubConnectionBuilder()
                     .withUrl(serverUrl)
-                    .configureLogging(LogLevel.Information)
+                    .withAutomaticReconnect()
+                    .configureLogging(LogLevel.Error)
                     .build();
 
                 newConnection.on("OnNextCharacterReceived", onNextCharacterReceived);
