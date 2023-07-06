@@ -1,4 +1,5 @@
 using Hangfire;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using WebApi.BackgroundServices;
 using WebApi.Hubs;
 using WebApi.Queues;
@@ -8,6 +9,8 @@ using WebApi.Services.Implementation;
 using WebApi.Storage;
 using WebApi.Storage.Implementation;
 
+const string corsAllowedOriginsSetting = "Cors:AllowedOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
@@ -15,13 +18,18 @@ builder.Logging.AddConsole();
 builder.Services.AddSignalR();
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(builder =>
-    {
-        builder.WithOrigins("https://localhost:3000")
+    string[] origins =
+        builder.Configuration[corsAllowedOriginsSetting]!
+            .Split(';', StringSplitOptions.RemoveEmptyEntries);
+
+    var policyBuilder =
+        new CorsPolicyBuilder()
+            .WithOrigins(origins)
             .AllowAnyHeader()
             .AllowAnyMethod()
             .AllowCredentials();
-    });
+
+    options.AddDefaultPolicy(policyBuilder.Build());
 });
 
 builder.Services.AddHangfire(configuration => configuration
@@ -61,8 +69,6 @@ if (!app.Environment.IsDevelopment())
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
-
-app.UseHttpsRedirection();
 
 app.UseCors();
 
