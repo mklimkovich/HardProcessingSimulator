@@ -5,7 +5,7 @@ import Header from './Header.js'
 import InputForm from './InputForm.js'
 import OutputArea from './OutputArea.js'
 
-export function Main() {
+export function Main({ serverUrl }) {
     let connection = useRef(undefined);
     let encodedString = useRef("");
 
@@ -45,7 +45,7 @@ export function Main() {
                 console.log("Creating a new WebSocket connection...")
 
                 const newConnection = new HubConnectionBuilder()
-                    .withUrl("https://localhost:7014/tasks")
+                    .withUrl(serverUrl)
                     .configureLogging(LogLevel.Information)
                     .build();
 
