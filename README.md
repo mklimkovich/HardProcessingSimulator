@@ -23,11 +23,11 @@ User cannot start another encoding process while the current one is in progress,
 - Business logic is implemented as a services
 - Server-side app is hosted in Linux Docker container
 - API & UI are in different containers
+- Basic authentication using nginx in another container
 
 ##### Requirements that have _not_ been implemented
 
 - Unit tests
-- Basic authentication using nginx in another container
 - Internationalization and localization
 - Connectivity error handling
 
@@ -46,6 +46,11 @@ To run all components in Docker containers, you can use this command in the solu
 >docker-compose up --build -d
 
 Frontend is now available at http://localhost:4002 (_proxy_ container).
+
+Test user credentials:
+
+>User:     userA
+>Password: SuperSecurePassword
 
 To stop and remove the containers, use:
 
