@@ -1,0 +1,44 @@
+
+services:
+  frontend:
+    restart: on-failure
+    build: ./reactapp
+    container_name: frontend
+    ports:
+      - '4001:3000'
+    environment:
+      - REACT_APP_BACKEND_URL=http://localhost:4000/tasks
+    networks:
+      - proxy-frontend
+      - frontend-backend
+
+  backend:
+    restart: on-failure
+    build: ./webapi
+    container_name: backend
+    ports:
+      - '4000:80'
+    environment:
+      - Cors:AllowedOrigins=http://localhost:4001
+    networks:
+      frontend-backend:
+        aliases:
+          - backend
+
+  proxy:
+    restart: on-failure
+    build: ./nginx
+    container_name: proxy
+    ports:
+      - '4002:8080'
+    networks:
+      - proxy-frontend
+    depends_on:
+      - frontend
+      - backend
+
+networks:
+  proxy-frontend:
+    name: proxy-frontend
+  frontend-backend:
+    name: frontend-backend
