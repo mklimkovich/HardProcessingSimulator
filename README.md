@@ -15,6 +15,8 @@ Encoded string is returned to the client one character at time, one by one, with
 All received characters should form a string in a UI textbox, hence it will be updated in real-time by adding new incoming characters
 User cannot start another encoding process while the current one is in progress, but user can press "cancel" button and thus cancel the currently running process.
 
+![Demo](/docs/Demo.gif "Demo")
+
 ##### Other requirements that have been implemented
  
 - Bootstrap JS to make page look neat
@@ -33,11 +35,11 @@ User cannot start another encoding process while the current one is in progress,
 
 ## Wireframes
 
-![Hard processing simulator UI](https://github.com/mklimkovich/HardProcessingSimulator/blob/develop/docs/Documentation-Wireframes.jpg "Hard processing simulator UI")
+![Hard processing simulator UI](/docs/Documentation-Wireframes.jpg "Hard processing simulator UI")
 
 ## Solution diagram
 
-![Solution diagram](https://github.com/mklimkovich/HardProcessingSimulator/blob/develop/docs/Documentation-Architecture.jpg "Hard processing simulator solution diagram")
+![Solution diagram](/docs/Documentation-Architecture.jpg "Hard processing simulator solution diagram")
 
 ## Build and run
 
