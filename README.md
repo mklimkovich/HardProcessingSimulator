@@ -1,6 +1,8 @@
 ﻿# Long-running job simulation
 
-##### Basic requirements
+## Requirements
+
+### Basic requirements
 
 This project aims to create a user-friendly Single-Page Application (SPA) using .NET 7 on the backend and ReactJS on the frontend.
 
@@ -12,7 +14,7 @@ The received characters are displayed in a UI textbox, providing real-time updat
 
 ![Demo](/docs/Demo.gif "Demo")
 
-##### Other requirements that have been implemented
+### Other requirements that have been implemented
  
 - Bootstrap JS to make UI look clean
 - Default IoC and package manager to build & run the app
@@ -22,7 +24,7 @@ The received characters are displayed in a UI textbox, providing real-time updat
 - API & UI are in different containers
 - Basic authentication using nginx in another container
 
-##### Requirements that have _not_ been implemented
+### Requirements that have _not_ been implemented
 
 - Unit tests
 - Internationalization and localization
