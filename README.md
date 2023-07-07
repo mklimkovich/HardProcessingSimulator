@@ -43,15 +43,15 @@ User cannot start another encoding process while the current one is in progress,
 
 To run all components in Docker containers, you can use this command in the solution directory:
 
->docker-compose up --build -d
+> docker-compose up --build -d
 
 Frontend is now available at http://localhost:4002 (_proxy_ container).
 
 Test user credentials:
 
->User:     userA
->Password: SuperSecurePassword
+> User:     userA
+> Password: SuperSecurePassword
 
 To stop and remove the containers, use:
 
->docker-compose down
+> docker-compose down
