@@ -13,11 +13,11 @@ public class OutputQueue : IOutputQueueScheduler, IOutputQueueReader
 
     public event ItemReceivedAsyncHandler<TaskEventArgs>? ItemReceived;
 
-    public Task ScheduleTaskAsync(string taskId, TimeSpan timeout)
+    public ValueTask ScheduleTaskAsync(string taskId, TimeSpan timeout)
     {
         BackgroundJob.Schedule(() => EnqueueAsync(taskId), timeout);
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
     public async Task EnqueueAsync(string taskId)
@@ -32,7 +32,7 @@ public class OutputQueue : IOutputQueueScheduler, IOutputQueueReader
         }
     }
 
-    private async Task FireEventAsync(string taskId)
+    private async ValueTask FireEventAsync(string taskId)
     {
         if (ItemReceived is not null)
         {

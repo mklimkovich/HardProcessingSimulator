@@ -2,5 +2,5 @@
 
 public interface IOutputQueueScheduler
 {
-    Task ScheduleTaskAsync(string taskId, TimeSpan timeout);
+    ValueTask ScheduleTaskAsync(string taskId, TimeSpan timeout);
 }

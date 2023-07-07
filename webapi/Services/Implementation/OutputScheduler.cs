@@ -20,7 +20,7 @@ public class OutputScheduler : IOutputScheduler
         _random = new Random();
     }
 
-    public async Task ScheduleAsync(string taskId)
+    public async ValueTask ScheduleAsync(string taskId)
     {
         if (await _storage.TaskExistsAsync(taskId))
         {

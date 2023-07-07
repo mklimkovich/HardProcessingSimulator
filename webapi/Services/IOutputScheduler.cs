@@ -2,5 +2,5 @@
 
 public interface IOutputScheduler
 {
-    Task ScheduleAsync(string taskId);
+    ValueTask ScheduleAsync(string taskId);
 }

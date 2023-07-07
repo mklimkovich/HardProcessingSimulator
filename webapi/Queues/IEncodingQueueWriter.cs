@@ -2,5 +2,5 @@
 
 public interface IEncodingQueueWriter
 {
-    Task EnqueueAsync(string taskId);
+    ValueTask EnqueueAsync(string taskId);
 }

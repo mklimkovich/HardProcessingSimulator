@@ -37,7 +37,7 @@ public sealed class OutputService : IHostedService
         return Task.CompletedTask;
     }
 
-    private async Task SendOutputHandler(object? sender, TaskEventArgs e)
+    private async ValueTask SendOutputHandler(object? sender, TaskEventArgs e)
     {
         string taskId = e.TaskId;
 

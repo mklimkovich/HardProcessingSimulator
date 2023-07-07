@@ -2,5 +2,5 @@
 
 public interface ITaskHubService
 {
-    Task SendOutputAsync(string taskId, char? character, int index, int total, bool isLast);
+    ValueTask SendOutputAsync(string taskId, char? character, int index, int total, bool isLast);
 }

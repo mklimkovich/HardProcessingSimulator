@@ -6,6 +6,10 @@ namespace WebApi.Hubs;
 
 public class TaskHub : Hub
 {
+    private const string ErrorClientMethod = "OnError";
+    private const string EmptyTextValidationError = "Text cannot be empty.";
+    private const string UniquenessValidationError = "Cannot run more than one task.";
+
     private readonly ITaskStorage _storage;
     private readonly IEncodingQueueWriter _encodingQueue;
 
@@ -21,7 +25,7 @@ public class TaskHub : Hub
     {
         if (string.IsNullOrEmpty(text))
         {
-            await Clients.Caller.SendAsync("OnError", "Text cannot be empty.");
+            await Clients.Caller.SendAsync(ErrorClientMethod, EmptyTextValidationError);
             return;
         }
 
@@ -30,7 +34,7 @@ public class TaskHub : Hub
         bool success = await _storage.TryCreateTaskAsync(new TaskInfo(taskId, text));
         if (!success)
         {
-            await Clients.Caller.SendAsync("OnError", "Cannot run more than one task.");
+            await Clients.Caller.SendAsync(ErrorClientMethod, UniquenessValidationError);
             return;
         }
 

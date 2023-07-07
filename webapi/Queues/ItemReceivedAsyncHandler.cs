@@ -1,4 +1,4 @@
 ﻿namespace WebApi.Queues;
 
-public delegate Task ItemReceivedAsyncHandler<in TEventArgs>(object? sender, TEventArgs e)
+public delegate ValueTask ItemReceivedAsyncHandler<in TEventArgs>(object? sender, TEventArgs e)
     where TEventArgs : EventArgs;

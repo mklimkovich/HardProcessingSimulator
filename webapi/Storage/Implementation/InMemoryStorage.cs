@@ -6,22 +6,22 @@ internal class InMemoryStorage : ITaskStorage
 {
     private readonly ConcurrentDictionary<string, TaskInfo> _storage = new();
 
-    public Task<bool> TaskExistsAsync(string id)
+    public ValueTask<bool> TaskExistsAsync(string id)
     {
-        return Task.FromResult(_storage.ContainsKey(id));
+        return ValueTask.FromResult(_storage.ContainsKey(id));
     }
 
-    public Task<bool> TryCreateTaskAsync(TaskInfo task)
+    public ValueTask<bool> TryCreateTaskAsync(TaskInfo task)
     {
-        return Task.FromResult(_storage.TryAdd(task.Id, task));
+        return ValueTask.FromResult(_storage.TryAdd(task.Id, task));
     }
 
-    public Task<string?> GetTaskDataAsync(string id)
+    public ValueTask<string?> GetTaskDataAsync(string id)
     {
-        return Task.FromResult(Find(id)?.Data);
+        return ValueTask.FromResult(Find(id)?.Data);
     }
 
-    public Task SaveTaskDataAsync(string id, string data)
+    public ValueTask SaveTaskDataAsync(string id, string data)
     {
         TaskInfo? task = Find(id);
         if (task is not null)
@@ -29,10 +29,10 @@ internal class InMemoryStorage : ITaskStorage
             task.Data = data;
         }
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public Task<(int LastSentCharacterNumber, int TotalLength)?> GetTaskStatisticsAsync(string id)
+    public ValueTask<(int LastSentCharacterNumber, int TotalLength)?> GetTaskStatisticsAsync(string id)
     {
         (int LastSentCharacterNumber, int TotalLength)? result = default;
 
@@ -42,10 +42,10 @@ internal class InMemoryStorage : ITaskStorage
             result = (task.LastSentCharacterNumber, task.Data.Length);
         }
 
-        return Task.FromResult(result);
+        return ValueTask.FromResult(result);
     }
 
-    public Task<char?> GetCharacterAsync(string id, int characterNumber)
+    public ValueTask<char?> GetCharacterAsync(string id, int characterNumber)
     {
         char? result = default;
 
@@ -55,10 +55,10 @@ internal class InMemoryStorage : ITaskStorage
             result = task.Data[characterNumber];
         }
 
-        return Task.FromResult(result);
+        return ValueTask.FromResult(result);
     }
 
-    public Task SaveLastSentCharacterAsync(string id, int lastSentCharacterNumber)
+    public ValueTask SaveLastSentCharacterAsync(string id, int lastSentCharacterNumber)
     {
         TaskInfo? task = Find(id);
         if (task is not null)
@@ -66,14 +66,14 @@ internal class InMemoryStorage : ITaskStorage
             task.LastSentCharacterNumber = lastSentCharacterNumber;
         }
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
-    public Task DeleteTaskAsync(string id)
+    public ValueTask DeleteTaskAsync(string id)
     {
         _storage.TryRemove(id, out _);
 
-        return Task.CompletedTask;
+        return ValueTask.CompletedTask;
     }
 
     private TaskInfo? Find(string id)

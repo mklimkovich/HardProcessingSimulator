@@ -37,7 +37,7 @@ public sealed class EncodingService : IHostedService
         return Task.CompletedTask;
     }
 
-    private async Task EncodeTextHandler(object? sender, TaskEventArgs e)
+    private async ValueTask EncodeTextHandler(object? sender, TaskEventArgs e)
     {
         string taskId = e.TaskId;
 

@@ -11,7 +11,7 @@
 
         public event ItemReceivedAsyncHandler<TaskEventArgs>? ItemReceived;
 
-        public Task EnqueueAsync(string taskId)
+        public ValueTask EnqueueAsync(string taskId)
         {
             Task.Factory.StartNew(async () =>
             {
@@ -25,10 +25,10 @@
                 }
             });
 
-            return Task.CompletedTask;
+            return ValueTask.CompletedTask;
         }
 
-        private async Task FireEventAsync(string taskId)
+        private async ValueTask FireEventAsync(string taskId)
         {
             if (ItemReceived is not null)
             {
