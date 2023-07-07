@@ -45,13 +45,13 @@ To run all components in Docker containers, you can use this command in the solu
 
 > docker-compose up --build -d
 
-Frontend is now available at http://localhost:4002 (_proxy_ container).
+Frontend is now available at http://localhost:4002 (**proxy** container).
 
 Test user credentials:
 
-> User:     userA
+> User:     **userA**
 >
-> Password: SuperSecurePassword
+> Password: **SuperSecurePassword**
 
 To stop and remove the containers, use:
 
