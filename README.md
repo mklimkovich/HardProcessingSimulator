@@ -50,6 +50,7 @@ Frontend is now available at http://localhost:4002 (_proxy_ container).
 Test user credentials:
 
 > User:     userA
+>
 > Password: SuperSecurePassword
 
 To stop and remove the containers, use:
