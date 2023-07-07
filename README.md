@@ -1,70 +1,53 @@
-# Getting Started with Create React App
+﻿#Long-running job simulation
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## General idea
 
-## Available Scripts
+Simulate hard processing work of the input data items given by user.
 
-In the project directory, you can run:
+##### Basic requirements
 
-### `npm start`
+A simple SPA with .Net 7 on the backend, and ReactJS on the frontend.
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+On the front-end side user is able to enter the text into the text field, press "Convert" button, and get this text encoded into the base64 format. Encoding is performed on the backend side. 
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+Encoded string is returned to the client one character at time, one by one, with random pause on the server 1-5 seconds.
 
-### `npm test`
+All received characters should form a string in a UI textbox, hence it will be updated in real-time by adding new incoming characters
+User cannot start another encoding process while the current one is in progress, but user can press "cancel" button and thus cancel the currently running process.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+##### Other requirements that have been implemented
+ 
+- Bootstrap JS to make page look neat
+- Default IoC and package manager to build & run the app
+- The latest released .Net & C# with all possible new features they provide
+- Business logic is implemented as a services
+- Server-side app is hosted in Linux Docker container
+- API & UI are in different containers
 
-### `npm run build`
+##### Requirements that have not been implemented
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+- Unit tests
+- Basic authentication using nginx in another container
+- Internationalization and localization
+- Connectivity error handling
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+## Wireframes
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+![Hard processing simulator UI](https://github.com/mklimkovich/HardProcessingSimulator/blob/develop/docs/Documentation-Wireframes.jpg "Hard processing simulator UI")
 
-### `npm run eject`
+## Solution diagram
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+![Solution diagram](https://github.com/mklimkovich/HardProcessingSimulator/blob/develop/docs/Documentation-Architecture.jpg "Hard processing simulator solution diagram)
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Build and run
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+To run all components in Docker containers, you can use this command in the solution directory:
 
-## Learn More
+>docker-compose up --build -d
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Frontend is available now at http://localhost:4001.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+To stop and remove the containers, use:
 
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+>docker-compose down
