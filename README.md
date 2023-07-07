@@ -2,8 +2,6 @@
 
 ## Requirements
 
-### Basic requirements
-
 This project aims to create a user-friendly Single-Page Application (SPA) using .NET 7 on the backend and ReactJS on the frontend.
 
 Users can enter text in a text field and click the "Convert" button to encode the text into the base64 format. The encoding process happens on the backend.
