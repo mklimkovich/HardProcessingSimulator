@@ -1,8 +1,8 @@
-﻿#Long-running job simulation
+﻿# Long-running job simulation
 
-## General idea
+## Requirements
 
-Simulate hard processing work of the input data items given by user.
+A general idea is to simulate hard processing work of the input data items given by user.
 
 ##### Basic requirements
 
@@ -24,7 +24,7 @@ User cannot start another encoding process while the current one is in progress,
 - Server-side app is hosted in Linux Docker container
 - API & UI are in different containers
 
-##### Requirements that have not been implemented
+##### Requirements that have _not_ been implemented
 
 - Unit tests
 - Basic authentication using nginx in another container
@@ -37,8 +37,7 @@ User cannot start another encoding process while the current one is in progress,
 
 ## Solution diagram
 
-![Solution diagram](https://github.com/mklimkovich/HardProcessingSimulator/blob/develop/docs/Documentation-Architecture.jpg "Hard processing simulator solution diagram)
-
+![Solution diagram](https://github.com/mklimkovich/HardProcessingSimulator/blob/develop/docs/Documentation-Architecture.jpg "Hard processing simulator solution diagram")
 
 ## Build and run
 
@@ -46,7 +45,7 @@ To run all components in Docker containers, you can use this command in the solu
 
 >docker-compose up --build -d
 
-Frontend is available now at http://localhost:4001.
+Frontend is now available at http://localhost:4001.
 
 To stop and remove the containers, use:
 
