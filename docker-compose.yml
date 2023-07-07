@@ -5,11 +5,9 @@ services:
     build: ./reactapp
     container_name: frontend
     ports:
-      - '4001:3000'
+      - '3000:3000'
     environment:
-      - REACT_APP_BACKEND_URL=http://host.docker.internal:4000/tasks
-    networks:
-      - proxy-frontend
+      - REACT_APP_BACKEND_URL=http://localhost:4002/tasks
 
   backend:
     restart: on-failure
@@ -19,8 +17,6 @@ services:
       - '4000:80'
     environment:
       - Cors:AllowedOrigins=http://localhost:4002
-    networks:
-      - proxy-backend
 
   proxy:
     restart: on-failure
@@ -28,15 +24,6 @@ services:
     container_name: proxy
     ports:
       - '4002:8080'
-    networks:
-      - proxy-frontend
-      - proxy-backend
     depends_on:
       - frontend
       - backend
-
-networks:
-  proxy-frontend:
-    name: proxy-frontend
-  proxy-backend:
-    name: proxy-backend
